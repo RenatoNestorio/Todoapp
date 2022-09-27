@@ -6,6 +6,7 @@ package Controller;
 
 import Util.ConnectionFactory;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -17,8 +18,39 @@ import model.Task;
  */
 public class TaskController {
     
-    public void save(Task task){
+    /**
+     * @param task
+     * @throws SQLException
+     */
+    public void save(Task task) throws SQLException{
     
+        String sql = "INSERT INTO TASKS (idPoject, name, description, completed, note,deadline, createdAt, updateAt) VALUES (?,?,?,?,?,?,?,?)";
+        
+        Connection connection = null;
+        PreparedStatement statement = null;
+        
+        try {
+            connection = ConnectionFactory.getConnection();
+            statement = connection.prepareStatement (sql);
+            statement.setInt(1, task.getidProject());
+            statement.setString(2, task.getname());
+            statement.setString(3,task.getDescription());
+            statement.setBoolean(4, task.isIscompleted());
+            statement.setString(5, task.getnotes());
+            statement.setDate(6, new Date(task.getDeadline().getTime()));
+            statement.setDate(7, new Date(task.getCreateadAt().getTime()));
+            statement.setDate(8, new Date(task.getUpdatedAt().getTime ()));
+            statement.execute();         
+        
+        } catch (Exception ex) {
+            throw new RuntimeException("Erro ao salvar a tarefa" + ex.getMessage (), ex);
+        } finally {
+            ConnectionFactory.closeConnection(connection);
+        }
+        
+        
+        
+        
     }
     
     public void update (Task task){
